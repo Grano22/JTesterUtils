@@ -1,0 +1,12 @@
+{
+    "name": "JTesterUtils",
+    "type": "module",
+    "version": "0.0.1",
+    "description": "Testers utils",
+    "scripts": {
+        "start": "nodemon JTesterUtils.js"
+    },
+    "devDependencies": {
+        "nodemon": "2.0.7"
+    }
+}

@@ -1,0 +1,642 @@
+parseChild(childStr) {
+            if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+            let queue = [childStr];
+            do {
+                let childParam = {
+                    componentName:"",
+                    children:{},
+                    args:[],
+                    namedArgs:{}
+                }, inStr = "", inArg = 0, endArg = 0, pstr = "";
+                for(let j = 0;j<queue.length;j++) {
+                let childEntry = queue[j];
+                    for(let i = 0;i<childEntry.length;i++) {
+                        let charCode = childEntry.charCodeAt(i);
+                        if(inStr=="" && (charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                            if(!inArg) {
+                                childParam.componentName += childEntry[i];
+                            } else if(inArg) {
+
+                            }
+                        } else if(inStr=="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = childEntry[i];
+                        } else if(inStr!="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = "";
+                        } else if(childEntry[i]=="(") {
+                            inArg += 1;
+                            if(inArg==endArg) {
+                                
+                            }
+                        } else if(childEntry[i]=="=") {
+                            if(inArg) {
+                                
+                            }
+                        } else if(childEntry[i]==")") {
+                            endArg += 1;
+                            if(inArg==endArg) {
+                                //childParam.children = this.parseChild(childParam.children);
+                                queue.push(childParam.children);
+                            }
+                        }
+                    }
+                }
+            } while(queue.length>0);
+        }
+
+
+        parseChild(childStr) {
+            if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+            let queue = [childStr], output = [], deep = 0;
+            do {
+                let initialObj = {
+                    componentName:"",
+                    args:[],
+                    namedArgs:{}
+                }, childParam = initialObj, inStr = "", inArg = 0, endArg = 0, pstr = "", currIteration = 0, strArg = "";
+                let childEntry = queue[currIteration];
+                    for(let i = 0;i<childEntry.length;i++) {
+                        let charCode = childEntry.charCodeAt(i);
+                        if(inStr=="" && (charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                            if(!inArg) {
+                                childParam.componentName += childEntry[i];
+                            } else if(inArg) {
+
+                            }
+                        } else if(inStr=="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = childEntry[i];
+                        } else if(inStr!="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = "";
+                        } else if(childEntry[i]=="(") {
+                            inArg += 1;
+                            if(inArg==endArg) {
+                                console.error("Wrong opened brackets")
+                            }
+                        } else if(childEntry[i]=="=") {
+                            if(!pstr && inArg) {
+                                strArg = pstr;
+                                pstr = "";
+                            }
+                        } else if(childEntry[i]==")") {
+                            if(inArg>1) 
+                            endArg += 1;
+                            if(inArg==endArg && childParam.args>0) {
+                                //childParam.children = this.parseChild(childParam.children);
+                                for(let argI in childParam.args) if(currIteration>0) queue.push([currIteration, childParam.args[argI]]); else queue.push(childParam.children[argI]);
+                                inArg = 0;
+                                endArg = 0;
+                            }
+                        } else if(!inArg && (childEntry[i].trim()=="" || childEntry.length - 1==i) && childParam!=initialObj) {
+                            this.output.push(childParam);
+                            childParam = initialObj;
+                        }
+                    }
+                currIteration++;
+            } while(queue.length>currIteration);
+            return output;
+        }
+
+                                if(inStr=="" && (charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                            if(!inArg) {
+                                childParam.componentName += childEntry[i];
+                            } else if(inArg) {
+
+                            }
+                        } else if(inStr=="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = childEntry[i];
+                        } else if(inStr!="" && (childEntry[i]=="'" || childEntry[i]=='"')) {
+                            inStr = "";
+                        } else if(childEntry[i]=="(") {
+                            inArg += 1;
+                            if(inArg==endArg) {
+                                console.error("Wrong opened brackets")
+                            }
+                        } else if(childEntry[i]=="=") {
+                            if(!strArg && inArg) {
+                                strArg = pstr;
+                                pstr = "";
+                            }
+                        } else if(!inStr && childEntry[i]==",") {
+                            if(inArg)
+                        } else if(childEntry[i]==")") {
+                            if(inArg>1) 
+                            endArg += 1;
+                            if(inArg==endArg && childParam.args>0) {
+                                //childParam.children = this.parseChild(childParam.children);
+                                for(let argI in childParam.args) if(currIteration>0) queue.push([currIteration, childParam.args[argI]]); else queue.push(childParam.children[argI]);
+                                inArg = 0;
+                                endArg = 0;
+                            }
+                        } else if(!inArg && (childEntry[i].trim()=="" || childEntry.length - 1==i) && childParam!=initialObj) {
+                            this.output.push(childParam);
+                            childParam = initialObj;
+                        }
+
+                        function parseChild(childStr) {
+    console.log("Testing........... ",childStr);
+    if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+    var queue = [[-1, childStr]], output = [], currIteration = 0;
+    try {
+    do {
+        if(currIteration>30) throw "Iteration overheated";
+        let initialObj = {
+            componentName:"",
+            args:[],
+            namedArgs:{},
+            classList:[]
+        }, childParam = initialObj, inStr = "", inArg = 0, endArg = 0, pstr = "", strArg = "", inClasslist = false;
+        let childEntry = queue[currIteration][1], parentNum = queue[currIteration][0];
+            for(let i = 0;i<childEntry.length;i++) {
+                let charCode = childEntry.charCodeAt(i);
+                if(inStr!="") {
+                    if(inArg) {
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                        if(childEntry[i]=="'" || childEntry[i]=='"') {
+                            if(strArg) {
+                                childParam.namedArgs[strArg] = pstr;
+                                strArg = "";
+                                pstr = "";
+                            }
+                            inStr = "";
+                        } else pstr += childEntry[i];
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                    } else throw "String declaration is only supported in component argument";
+                } else {
+                    if(childEntry[i]=="'" || childEntry[i]=='"') {
+                        inStr = childEntry[i];
+                    } 
+                    else if(inArg) {
+                        if(strArg!="") {
+                            //Vaild Target
+                            if(childEntry[i]==",") {
+                                childParam.namedArgs[strArg] = pstr;
+                                pstr = "";
+                                strArg = "";
+                            //Error Comma
+                            } else if(childEntry.length-1==i) {
+                                throw "String arg not enclosed";
+                            } else pstr += childEntry[i];
+                        } else {
+                            if(childEntry[i]=="=") {
+                                strArg = pstr;
+                                pstr = "";
+                            } else if(childEntry[i]==",") {
+                                childParam.args.push(pstr);
+                                pstr = "";
+                            } else if(childEntry[i]==")") {
+                                endArg += 1;
+                                console.log("me and you "+endArg+" "+inArg);
+                                if(inArg==endArg) {
+                                    if(pstr!="") childParam.args.push(pstr);
+                                    console.log("succesfully enclosed");
+                                    inArg = 0;
+                                    endArg = 0;
+                                    if(childEntry.length-1==i) {
+                                        for(let argI in childParam.args) queue.push([currIteration, childParam.args[argI]]);
+                                        //output.push([parentNum, childParam]);
+                                        childParam.parent = parentNum;
+                                        output.push(childParam);
+                                    }
+                                } else if(inArg>1) pstr += childEntry[i];
+                                // else throw `Enclosed invaild from ${inArg} to ${endArg}`;        
+                            } else if(childEntry[i]=="(") {
+                                inArg += 1;
+                                if(inArg==endArg) throw `Enclosed tag inverted`;
+                                if(inArg>1) pstr += childEntry[i];
+                            } else pstr += childEntry[i];
+                        }
+                    } else {
+                        if(inClasslist) {
+                            if(childEntry[i]=="(" || childEntry[i].trim()=="" || childEntry[i]==".") {
+                                if(childEntry[i]!=".") inClasslist = false;
+                                childParam.classList.push(pstr);
+                                pstr = "";
+                                if(childEntry[i]=="(") inArg = 1;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) pstr += childEntry[i];
+                            else throw ("Invaild character during class parsing "+i);
+                        } else {
+                           if(childEntry[i].trim()=="" || childEntry.length-1==i) {
+                                if(inArg==endArg) {
+                                    if(childParam.componentName.length) {
+                                        console.log(3, childParam);
+                                        childParam.componentName += childEntry[i];
+                                        for(let argI in childParam.args) queue.push([currIteration, childParam.args[argI]]);
+                                        //output.push([parentNum, childParam]);
+                                        childParam.parent = parentNum;
+                                        output.push(childParam);
+                                        pstr = "";
+                                        childParam = initialObj;
+                                    }
+                                } else throw `Unregular closing brackets ${inArg} to ${endArg}`;
+                            } else if(childEntry[i]=="(") {
+                                inArg = 1;
+                                pstr = "";
+                            } else if(childEntry[i]==".") {
+                                inClasslist = true;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                                childParam.componentName += childEntry[i];
+                            }
+                        }
+                    }
+                }
+            }
+        currIteration++;
+    } while(queue.length>currIteration);
+    } catch(exception) {
+        console.error(exception);
+    }
+    return output;
+}
+
+
+function parseChild(childStr) {
+    console.log("Testing........... ",childStr);
+    if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+    const initialObj = ()=>({
+        componentName:"",
+        args:[],
+        namedArgs:{},
+        classList:[]
+    });
+    let queue = [[-1, childStr]], output = [], currIteration = 0;
+    try {
+    do {
+        if(currIteration>30) throw "Iteration overheated";
+        let childParam = initialObj(), inStr = "", inArg = 0, endArg = 0, pstr = "", strArg = "", inClasslist = false;
+        let childEntry = queue[currIteration][1], parentNum = queue[currIteration][0];
+        console.log("%c"+childEntry, "font-size:22px;");
+        console.log(JSON.stringify(childParam), JSON.stringify(initialObj));
+            for(let i = 0;i<childEntry.length;i++) {
+                let charCode = childEntry.charCodeAt(i);
+                if(inStr!="") {
+                    if(inArg) {
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                        if(childEntry[i]=="'" || childEntry[i]=='"') {
+                            if(strArg) {
+                                childParam.namedArgs[strArg] = pstr;
+                                strArg = "";
+                                pstr = "";
+                            }
+                            inStr = "";
+                        } else pstr += childEntry[i];
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                    } else throw "String declaration is only supported in component argument";
+                } else {
+                    if(childEntry[i]=="'" || childEntry[i]=='"') {
+                        inStr = childEntry[i];
+                    } 
+                    else if(inArg) {
+                        if(strArg!="") {
+                            //Vaild Target
+                            if(childEntry[i]==",") {
+                                childParam.namedArgs[strArg] = pstr;
+                                pstr = "";
+                                strArg = "";
+                            //Error Comma
+                            } else if(childEntry.length-1==i) {
+                                throw "String arg not enclosed";
+                            } else pstr += childEntry[i];
+                        } else {
+                            if(childEntry[i]=="=") {
+                                strArg = pstr;
+                                pstr = "";
+                            } else if(childEntry[i]==",") {
+                                console.log(pstr);
+                                if(pstr!="") { childParam.args.push(pstr);
+                                pstr = ""; }
+                            } else if(childEntry[i]==")") {
+                                endArg += 1;
+                                if(inArg==endArg) {
+                                    if(pstr!="") childParam.args.push(pstr);
+                                    console.log("succesfully enclosed");
+                                    inArg = 0;
+                                    endArg = 0;
+                                    if(childEntry.length-1==i) {
+                                        for(let argI in childParam.args) queue.push([currIteration, childParam.args[argI]]);
+                                        //output.push([parentNum, childParam]);
+                                        if(parentNum<0) { childParam.parent = parentNum; parentNum -= 1; } else childParam.parent = parentNum;
+                                        output.push(childParam);
+                                        //
+                                    }
+                                } else if(inArg>1) pstr += childEntry[i];
+                                else throw "Fatal!";
+                                // else throw `Enclosed invaild from ${inArg} to ${endArg}`;        
+                            } else if(childEntry[i]=="(") {
+                                inArg += 1;
+                                if(inArg==endArg) throw `Enclosed tag inverted`;
+                                if(inArg>1) pstr += childEntry[i];
+                            } else pstr += childEntry[i];
+                        }
+                    } else {
+                        if(inClasslist) {
+                            if(childEntry[i]=="(" || childEntry[i].trim()=="" || childEntry[i]==".") {
+                                if(childEntry[i]!=".") inClasslist = false;
+                                childParam.classList.push(pstr);
+                                pstr = "";
+                                if(childEntry[i]=="(") inArg = 1;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) pstr += childEntry[i];
+                            else throw ("Invaild character during class parsing "+i);
+                        } else {
+                           if(childEntry[i].trim()=="" || childEntry.length-1==i) {
+                                if(inArg==endArg) {
+                                    // && childEntry.length-1
+                                    if(childParam.componentName.length) {
+                                        //console.log(3, childParam);
+                                        if(i==childEntry.length-1) childParam.componentName += childEntry[i];
+                                        for(let argI in childParam.args) if(parentNum<0) queue.push([currIteration, childParam.args[argI]]); else queue.push([currIteration, childParam.args[argI]]);
+                                        //output.push([parentNum, childParam]);
+                                        if(parentNum<0) { childParam.parent = parentNum; parentNum -= 1; } else childParam.parent = parentNum;
+                                        output.push(childParam);
+                                        pstr = "";
+                                        childParam = initialObj();
+                                    }
+                                } else throw `Unregular closing brackets ${inArg} to ${endArg}`;
+                            } else if(childEntry[i]=="(") {
+                                inArg = 1;
+                                pstr = "";
+                            } else if(childEntry[i]==".") {
+                                inClasslist = true;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                                childParam.componentName += childEntry[i];
+                            }
+                        }
+                    }
+                }
+            }
+        currIteration++;
+    } while(queue.length>currIteration);
+    } catch(exception) {
+        console.error(exception);
+    }
+    return output;
+}
+
+function parseChilds(parsedArr) {
+    for(let j=parsedArr.length - 1;j>0;j--) {
+        if(parsedArr[j].parent>=0) {
+            let tgParent = parsedArr[parsedArr[j].parent];
+            if(!Array.isArray(tgParent.childrens)) tgParent.childrens = [];
+            tgParent.childrens.push(parsedArr[j]);
+        }
+    }
+    return parsedArr.filter(v=>v.parent==-1);
+}
+
+function parseChild(childStr) {
+    if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+    const initialObj = ()=>({
+        componentName:"",
+        args:[],
+        namedArgs:{},
+        classList:[]
+    });
+    let queue = [[-1, childStr]], output = [], currIteration = 0;
+    try {
+    do {
+        if(currIteration>30) throw "Iteration overheated";
+        let childParam = initialObj(), inStr = "", inArg = 0, endArg = 0, pstr = "", strArg = "", inClasslist = false;
+        let childEntry = queue[currIteration][1], parentNum = queue[currIteration][0];
+            for(let i = 0;i<childEntry.length;i++) {
+                let charCode = childEntry.charCodeAt(i);
+                if(inStr!="") {
+                    if(inArg) {
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                        if(childEntry[i]=="'" || childEntry[i]=='"') {
+                            if(strArg) {
+                                childParam.namedArgs[strArg] = pstr;
+                                strArg = "";
+                                pstr = "";
+                            }
+                            inStr = "";
+                        } else pstr += childEntry[i];
+                        //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                    } else throw "String declaration is only supported in component argument";
+                } else {
+                    if(childEntry[i]=="'" || childEntry[i]=='"') {
+                        inStr = childEntry[i];
+                    } 
+                    else if(inArg) {
+                        if(strArg!="") {
+                            //Vaild Target
+                            if(childEntry[i]==",") {
+                                childParam.namedArgs[strArg] = pstr;
+                                pstr = "";
+                                strArg = "";
+                            //Error Comma
+                            } else if(childEntry.length-1==i) {
+                                throw "String arg not enclosed";
+                            } else pstr += childEntry[i];
+                        } else {
+                            if(childEntry[i]=="=") {
+                                strArg = pstr;
+                                pstr = "";
+                            } else if(childEntry[i]==",") {
+                                if(pstr!="") { childParam.args.push(pstr);
+                                pstr = ""; }
+                            } else if(childEntry[i]==")") {
+                                endArg += 1;
+                                if(inArg==endArg) {
+                                    if(pstr!="") childParam.args.push(pstr);
+                                    inArg = 0;
+                                    endArg = 0;
+                                    if(childEntry.length-1==i) {
+                                        for(let argI in childParam.args) queue.push([currIteration, childParam.args[argI]]);
+                                        childParam.parent = parentNum;
+                                        output.push(childParam);
+                                    }
+                                } else if(inArg>1) pstr += childEntry[i];
+                                else throw "Fatal!"; 
+                            } else if(childEntry[i]=="(") {
+                                inArg += 1;
+                                if(inArg==endArg) throw `Enclosed tag inverted`;
+                                if(inArg>1) pstr += childEntry[i];
+                            } else pstr += childEntry[i];
+                        }
+                    } else {
+                        if(inClasslist) {
+                            if(childEntry[i]=="(" || childEntry[i].trim()=="" || childEntry[i]==".") {
+                                if(childEntry[i]!=".") inClasslist = false;
+                                childParam.classList.push(pstr);
+                                pstr = "";
+                                if(childEntry[i]=="(") inArg = 1;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) pstr += childEntry[i];
+                            else throw ("Invaild character during class parsing "+i);
+                        } else {
+                           if(childEntry[i].trim()=="" || childEntry.length-1==i) {
+                                if(inArg==endArg) {
+                                    if(childParam.componentName.length) {
+                                        if(i==childEntry.length-1) childParam.componentName += childEntry[i];
+                                        for(let argI in childParam.args) queue.push([currIteration, childParam.args[argI]]);
+                                        childParam.parent = parentNum;
+                                        output.push(childParam);
+                                        pstr = "";
+                                        childParam = initialObj();
+                                    }
+                                } else throw `Unregular closing brackets ${inArg} to ${endArg}`;
+                            } else if(childEntry[i]=="(") {
+                                inArg = 1;
+                                pstr = "";
+                            } else if(childEntry[i]==".") {
+                                inClasslist = true;
+                            } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                                childParam.componentName += childEntry[i];
+                            }
+                        }
+                    }
+                }
+            }
+        currIteration++;
+    } while(queue.length>currIteration);
+    } catch(exception) {
+        console.error(exception);
+    }
+    return output;
+}
+
+function parseChilds(parsedArr) {
+    for(let j=parsedArr.length - 1;j>0;j--) {
+        if(parsedArr[j].parent>=0) {
+            let tgParent = parsedArr[parsedArr[j].parent];
+            if(!Array.isArray(tgParent.childrens)) tgParent.childrens = [];
+            tgParent.childrens.push(parsedArr[j]);
+        }
+    }
+    return parsedArr.filter(v=>v.parent==-1);
+}
+
+parseChild(childStr) {
+            if(typeof childStr!="string") { console.error("Child entry in BuildableComponent must be a string!"); return null; }
+            const initialObj = ()=>({
+                componentName:"",
+                args:[],
+                namedArgs:{},
+                classList:[],
+                childrens:[],
+                render:()=>{
+                    const ComponentName = this.componentName;
+                    return (<ComponentName>{this.childrens}</ComponentName>);
+                },
+                renderWithoutJSX:()=>{
+                    console.log(this.componentName);
+                    return React.createElement(this.componentName, null, this.childrens);
+                }
+            });
+            let queue = [[-1, childStr]], output = [], currIteration = 0, elsCounter = 0;
+            try {
+            do {
+                if(currIteration>30) throw "Iteration overheated";
+                let childParam = initialObj(), inStr = "", inArg = 0, endArg = 0, pstr = "", strArg = "", inClasslist = false;
+                let childEntry = queue[currIteration][1], parentNum = queue[currIteration][0];
+                    for(let i = 0;i<childEntry.length;i++) {
+                        let charCode = childEntry.charCodeAt(i);
+                        if(inStr!="") {
+                            if(inArg) {
+                                //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                                if(childEntry[i]=="'" || childEntry[i]=='"') {
+                                    if(strArg) {
+                                        childParam.namedArgs[strArg] = pstr;
+                                        strArg = "";
+                                        pstr = "";
+                                    }
+                                    inStr = "";
+                                } else pstr += childEntry[i];
+                                //if(childEntry[i]=="'" || childEntry[i]=='"') inStr = ""; else pstr += childEntry[i];
+                            } else throw "String declaration is only supported in component argument";
+                        } else {
+                            if(childEntry[i]=="'" || childEntry[i]=='"') {
+                                inStr = childEntry[i];
+                            } 
+                            else if(inArg) {
+                                if(strArg!="") {
+                                    //Vaild Target
+                                    if(childEntry[i]==",") {
+                                        childParam.namedArgs[strArg] = pstr;
+                                        pstr = "";
+                                        strArg = "";
+                                    //Error Comma
+                                    } else if(childEntry.length-1==i) {
+                                        throw "String arg not enclosed";
+                                    } else pstr += childEntry[i];
+                                } else {
+                                    if(childEntry[i]=="=") {
+                                        strArg = pstr;
+                                        pstr = "";
+                                    } else if(childEntry[i]==",") {
+                                        if(pstr!="") { childParam.args.push(pstr);
+                                        pstr = ""; }
+                                    } else if(childEntry[i]==")") {
+                                        endArg += 1;
+                                        if(inArg==endArg) {
+                                            if(pstr!="") childParam.args.push(pstr);
+                                            inArg = 0;
+                                            endArg = 0;
+                                            if(childEntry.length-1==i) {
+                                                for(let argI in childParam.args) queue.push([elsCounter, childParam.args[argI]]);
+                                                childParam.parent = parentNum;
+                                                output.push(childParam);
+                                                elsCounter++;
+                                            }
+                                        } else if(inArg>1) pstr += childEntry[i];
+                                        else throw "Fatal!"; 
+                                    } else if(childEntry[i]=="(") {
+                                        inArg += 1;
+                                        if(inArg==endArg) throw `Enclosed tag inverted`;
+                                        if(inArg>1) pstr += childEntry[i];
+                                    } else pstr += childEntry[i];
+                                }
+                            } else {
+                                if(inClasslist) {
+                                    if(childEntry[i]=="(" || childEntry[i].trim()=="" || childEntry[i]==".") {
+                                        if(childEntry[i]!=".") inClasslist = false;
+                                        childParam.classList.push(pstr);
+                                        pstr = "";
+                                        if(childEntry[i]=="(") inArg = 1;
+                                    } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) pstr += childEntry[i];
+                                    else throw ("Invaild character during class parsing "+i);
+                                } else {
+                                   if(childEntry[i].trim()=="" || childEntry.length-1==i) {
+                                        if(inArg==endArg) {
+                                            if(childParam.componentName.length) {
+                                                if(i==childEntry.length-1) childParam.componentName += childEntry[i];
+                                                for(let argI in childParam.args) queue.push([elsCounter, childParam.args[argI]]);
+                                                childParam.parent = parentNum;
+                                                output.push(childParam);
+                                                pstr = "";
+                                                childParam = initialObj();
+                                                elsCounter++;
+                                            }
+                                        } else throw `Unregular closing brackets ${inArg} to ${endArg}`;
+                                    } else if(childEntry[i]=="(") {
+                                        inArg = 1;
+                                        pstr = "";
+                                    } else if(childEntry[i]==".") {
+                                        inClasslist = true;
+                                    } else if((charCode>=65 && charCode<=90) || (charCode>=97 && charCode<=122)) {
+                                        childParam.componentName += childEntry[i];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                currIteration++;
+            } while(queue.length>currIteration);
+            } catch(exception) {
+                console.error(exception);
+            }
+            return output;
+        }
+
+        parseChildsAsComponents(parsedArr) {
+            for(let j=parsedArr.length - 1;j>=0;j--) {
+                if(parsedArr[j].parent>=0) {
+                    let tgParent = parsedArr[parsedArr[j].parent], tgChild = parsedArr[j];
+                    if(tgChild.componentName[0]==tgChild.componentName[0].toUpperCase()) {
+
+                    }
+                    tgParent.childrens.push(React.createElement(parsedArr[j].componentName, parsedArr[j].namedArgs, parsedArr[j].childrens));
+                } else {
+                    parsedArr[j] = React.createElement(parsedArr[j].componentName, parsedArr[j].namedArgs, parsedArr[j].childrens);
+                    console.log(parsedArr[j]);
+                }
+            }
+            return parsedArr.filter(v=>v.parent==-1);
+        }
